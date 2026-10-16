@@ -1,5 +1,5 @@
-:root{--bg:#fff;--card:#f6f5f2;--ink:#111;--sub:#555;--muted:#898781;--line:#ddd;--ok:#0a7a3b;--warn:#a15c00;--grid:rgba(137,135,129,.2);--accent:#6250d6;--now:#d0342c;--sleep:rgba(98,80,214,.08);--chip:#ecebe6}
-@media(prefers-color-scheme:dark){:root{--bg:#161615;--card:#222221;--ink:#f0efec;--sub:#b5b4aa;--line:#3a3a38;--ok:#4cc17f;--warn:#e8a43a;--accent:#9d8ff0;--now:#ff6b5e;--sleep:rgba(157,143,240,.10);--chip:#2c2c2a}}
+:root{--bg:#fff;--card:#f6f5f2;--ink:#111;--sub:#555;--muted:#898781;--line:#ddd;--ok:#0a7a3b;--warn:#a15c00;--grid:rgba(137,135,129,.2);--accent:#6250d6;--now:#d0342c;--sleep:rgba(98,80,214,.08);--chip:#ecebe6;--on-accent:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#161615;--card:#222221;--ink:#f0efec;--sub:#b5b4aa;--line:#3a3a38;--ok:#4cc17f;--warn:#e8a43a;--accent:#9d8ff0;--now:#ff6b5e;--sleep:rgba(157,143,240,.10);--chip:#2c2c2a;--on-accent:#161615}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,sans-serif}
 main{max-width:560px;margin:0 auto;padding:16px}
@@ -57,7 +57,7 @@ form.add input[name=mg]{width:84px}
 .banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:13px;color:var(--sub)}
 .banner span{flex:1 1 220px}
 .banner b{color:var(--ink);font-weight:600}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .pick{margin-top:10px}
 .pick:first-child{margin-top:0}
 .pk{display:block;font-size:13px;color:var(--ink);margin-bottom:4px}
@@ -78,3 +78,33 @@ label.tm input{font:inherit;color:var(--ink);background:var(--bg);border:1px sol
 .stp .v.tv{min-width:64px;text-align:center}
 .step{width:34px;height:34px;flex:none;font:inherit;font-size:20px;line-height:1;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .step:active{border-color:var(--accent)}
+.daynav{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.dayt{flex:1;text-align:center;line-height:1.25}
+.dayt b{display:block;font-size:16px;font-weight:600}
+.dayt small{font-size:12px;color:var(--sub)}
+.navb{width:40px;height:40px;flex:none;font:inherit;font-size:22px;line-height:1;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;cursor:pointer;touch-action:manipulation}
+.navb:disabled{opacity:.35;cursor:default}
+.pastnote{font-size:13px;color:var(--warn);background:var(--card);border-radius:8px;padding:6px 10px;margin:-4px 0 10px}
+.linkbtn{font:inherit;background:none;border:none;color:var(--accent);text-decoration:underline;padding:0;cursor:pointer}
+.usual{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.h2sub{font-size:12px;font-weight:400;color:var(--muted);margin-left:4px}
+.ci .cih{font-size:14px;font-weight:500;margin-bottom:6px}
+.ci .ln .seg{flex:1}
+.rate button{font-variant-numeric:tabular-nums;font-size:14px;padding:7px 4px}
+.ciIn{display:flex;gap:8px;margin-top:8px}
+.ciIn label{flex:1;display:flex;flex-direction:column;font-size:12px;color:var(--sub);gap:2px}
+.ciIn input,.ci .note{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%;min-width:0}
+.ci .note{margin-top:8px}
+.muted{color:var(--muted);font-weight:400}
+.insight{margin:8px 0}
+.hrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--ink);background:none;border:none;border-top:1px solid var(--line);padding:8px 2px;cursor:pointer}
+.hrow.cur{background:var(--card)}
+.hrow .hd1{flex:1;min-width:0;display:flex;flex-direction:column;font-size:14px}
+.hrow .hd1 b{font-weight:500}
+.hrow small{font-size:12px;color:var(--sub)}
+.hrow .hd2{display:flex;flex-direction:column;align-items:flex-end;font-size:10px;letter-spacing:1px;color:var(--accent);flex:none}
+.hrow .hd2 small{letter-spacing:0;font-size:11px}
+.dim{color:var(--line)}
+.rate button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.hrow .hd2{min-width:58px}
+.dots{white-space:nowrap}

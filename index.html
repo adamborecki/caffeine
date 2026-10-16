@@ -15,6 +15,12 @@
   <span>👋 You're looking at <b>Adam's typical day</b>, as an example. Play with it, or set it up for yourself.</span>
   <button class="btn primary" type="button" id="mineBtn">Make it mine</button>
 </div>
+<div class="daynav">
+  <button type="button" class="navb" id="dayPrev" aria-label="Previous day">‹</button>
+  <div class="dayt"><b id="dayLabel">Today</b><small id="daySub"></small></div>
+  <button type="button" class="navb" id="dayNext" aria-label="Next day">›</button>
+</div>
+<p class="pastnote" id="pastNote" hidden>You're editing your log for this day. <button type="button" class="linkbtn" id="backToday">Back to today</button></p>
 
 <div class="grid">
   <div class="m"><small>Right now</small><b id="mNow">0 mg</b></div>
@@ -26,7 +32,7 @@
 <div id="legend"></div>
 <div class="chart"><canvas id="c" role="img" aria-label="Caffeine active in the body across the day for each drink and in total, with your comfort level, sleep window, and a marker for now.">Caffeine curves across the day.</canvas></div>
 
-<h2>Today's drinks</h2>
+<h2 id="drinksTitle">Today's drinks</h2>
 <div id="drinks"></div>
 <details id="addBox">
   <summary>+ Add a drink</summary>
@@ -44,6 +50,31 @@
 </details>
 <div id="daily"></div>
 <div class="bar" id="dailyBar"><div></div></div>
+<div class="usual">
+  <button class="btn" id="saveUsual" type="button">Set as my usual day</button>
+  <button class="btn" id="loadUsual" type="button">Load my usual day</button>
+</div>
+<p class="sub">New days start from your usual day. Tweak each day to match what you actually had, and it's saved by date.</p>
+
+<h2>Check-in <small class="h2sub">all optional</small></h2>
+<div id="checkin">
+  <div class="row ci">
+    <div class="cih" id="amTitle">🌅 Morning: how did you sleep last night?</div>
+    <div class="seg rate" data-f="am.q" role="group" aria-label="Sleep quality, 1 to 5"></div>
+    <div class="ciIn">
+      <label>Hours slept <input type="number" data-f="am.hrs" min="0" max="16" step="0.25" inputmode="decimal" placeholder="7.5"></label>
+      <label>Sleep score <input type="number" data-f="am.score" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100"></label>
+    </div>
+    <input class="note" data-f="am.note" maxlength="300" placeholder="Note (optional)" aria-label="Morning note">
+  </div>
+  <div class="row ci">
+    <div class="cih">🌙 Evening: how was the day?</div>
+    <div class="ln"><span class="k">Energy</span><div class="seg rate" data-f="pm.energy" role="group" aria-label="Energy, 1 to 5"></div></div>
+    <div class="ln"><span class="k">Mood</span><div class="seg rate" data-f="pm.mood" role="group" aria-label="Mood, 1 to 5"></div></div>
+    <input class="note" data-f="pm.note" maxlength="300" placeholder="Note (optional)" aria-label="Evening note">
+  </div>
+  <p class="sub">Hours and sleep score can come straight from the Sleep section of your watch or phone. 1 = rough, 5 = great.</p>
+</div>
 
 <h2>Your body and sleep</h2>
 <div class="row">
@@ -53,9 +84,15 @@
   <div class="ln"><span class="k">Half-life</span><input type="range" id="hl" min="2" max="12" step="0.5"><span class="v" id="hlv"></span></div>
   <div class="ln"><span class="k">Bedtime</span><input type="range" id="bed" min="1200" max="1620" step="15"><span class="stp"><button type="button" class="step" data-d="-15" aria-label="15 minutes earlier">‹</button><span class="v tv" id="bedv"></span><button type="button" class="step" data-d="15" aria-label="15 minutes later">›</button></span></div>
   <div class="ln"><span class="k">Wake-up</span><input type="range" id="wake" min="300" max="720" step="5"><span class="stp"><button type="button" class="step" data-d="-15" aria-label="15 minutes earlier">‹</button><span class="v tv" id="wakev"></span><button type="button" class="step" data-d="15" aria-label="15 minutes later">›</button></span></div>
-  <label class="toggle"><input type="checkbox" id="repeat"> Same routine every day (count yesterday's leftovers)</label>
+  <label class="toggle"><input type="checkbox" id="repeat"> Count leftovers from earlier days (uses your log, or assumes the same routine for days you didn't log)</label>
   <p class="sub">These are two different things. <b>Sensitivity</b> is how strongly a given amount affects you (receptor genetics, tolerance). <b>How long it lasts</b> is how fast your body clears it (mostly liver enzymes). You can be sensitive and still clear it fast.</p>
 </div>
+
+<details id="histBox">
+  <summary>History <span id="histCount" class="muted"></span></summary>
+  <p class="sub insight" id="insight"></p>
+  <div id="histList"></div>
+</details>
 
 <details>
   <summary>How this works &amp; sources</summary>
@@ -81,7 +118,7 @@
 
 <details>
   <summary>Your data</summary>
-  <p class="prose">Everything is stored only in this browser (localStorage). Nothing is sent anywhere.</p>
+  <p class="prose">Everything (drinks, history, check-ins) is stored only in this browser (localStorage). Nothing is sent anywhere. Clearing site data erases it, so export a backup now and then. Import it on another device to move your data.</p>
   <div class="data">
     <button class="btn" id="exportBtn" type="button">Export JSON</button>
     <button class="btn" id="importBtn" type="button">Import JSON</button>
