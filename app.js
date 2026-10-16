@@ -1,7 +1,9 @@
 'use strict';
 const KEY='caffeine-planner-v2';
 const KA=3; // absorption rate per hour; peak lands roughly 1 h after a dose
-const X0=4,X1=32; // chart spans 4am today to 8am tomorrow
+const X0=4,X1=32;
+const Y_MIN_MAX=200; // default y-axis top (mg)
+const STEPPER='<span class="stp"><button type="button" class="step" data-d="-15" aria-label="15 minutes earlier">‹</button><span class="v tv"></span><button type="button" class="step" data-d="15" aria-label="15 minutes later">›</button></span>'; // chart spans 4am today to 8am tomorrow
 const PALETTE=['#eb6834','#1baf7a','#2a78d6','#c03f8c','#b8860b','#0f9fb0','#8a5a2b','#7a7a00'];
 const CELSIUS_PER_OZ=200/12;
 
@@ -33,9 +35,9 @@ const HL={fast:{label:'Fast',hl:3.5},avg:{label:'Average',hl:5},slow:{label:'Lin
 
 // Adam's routine, shown to first-time visitors as an example until they press "Make it mine".
 function defaults(){
-  return {v:2,profile:'example',hl:5,bed:24,wake:h(7,50),thr:60,repeat:true,custom:[],entries:[
-    {name:'Yogi Sweet Tangerine Positive Energy tea',mg:70,t:h(8,15),on:true},
-    {name:'Green tea, lemon & ginger',mg:30,t:h(12,30),on:true},
+  return {v:2,rv:2,profile:'example',hl:4,bed:24,wake:h(7,50),thr:60,repeat:true,custom:[],entries:[
+    {name:'Yogi Sweet Tangerine Positive Energy tea',mg:70,t:9,on:true},
+    {name:'Green tea, lemon & ginger',mg:30,t:h(12,45),on:true},
     {name:'Celsius (small pour)',perOz:CELSIUS_PER_OZ,oz:3,t:14,on:false},
     {name:'Preworkout (1 scoop)',mg:200,t:15,on:false},
     {name:'Moroccan mint green tea',mg:30,t:16,on:true}
@@ -64,6 +66,16 @@ function normalize(o){
       return withId(x);
     });
   }else S.entries=D.entries;
+  // Routine v2: Adam's updated times and half-life. Only touches drinks still at the old example times.
+  if(!(o.rv>=2)){
+    let hit=false;
+    S.entries.forEach(e=>{
+      if(e.name==='Yogi Sweet Tangerine Positive Energy tea'&&e.t===h(8,15)){e.t=9;hit=true}
+      if(e.name==='Green tea, lemon & ginger'&&e.t===h(12,30)){e.t=h(12,45);hit=true}
+    });
+    if(hit&&S.hl===5)S.hl=4;
+  }
+  S.rv=2;
   return S;
 }
 
@@ -118,7 +130,7 @@ function renderList(){
       '<button class="ib dup" type="button" title="Duplicate" aria-label="Duplicate">⧉</button>'+
       '<button class="ib del" type="button" title="Remove" aria-label="Remove">✕</button></div>'+
       '<div class="ln">'+doseControl(e)+'</div>'+
-      '<div class="ln"><span class="k">Time</span><input type="range" class="time" min="300" max="1410" step="15" value="'+Math.round(e.t*60)+'"><span class="v"></span></div>'+
+      '<div class="ln"><span class="k">Time</span><input type="range" class="time" min="300" max="1410" step="15" value="'+Math.round(e.t*60)+'">'+STEPPER+'</div>'+
       '<div class="cut"></div>'+
     '</div>').join('')||'<p class="sub">No drinks yet. Add one below.</p>';
 }
@@ -193,7 +205,7 @@ const chart=new Chart($('c'),{type:'line',data:{datasets:[]},
       callbacks:{title:i=>fmt(i[0].parsed.x),label:i=>i.dataset.label+': '+Math.round(i.parsed.y)+' mg'}}},
     scales:{
       x:{type:'linear',min:X0,max:X1,ticks:{stepSize:4,color:'#898781',font:{size:11},callback:v=>fmt(v)},grid:{display:false}},
-      y:{min:0,suggestedMax:50,ticks:{color:'#898781',font:{size:11}},grid:{}}
+      y:{min:0,max:Y_MIN_MAX,ticks:{color:'#898781',font:{size:11}},grid:{}}
     }},
   plugins:[markers]});
 // Touch screens never send "mouseout", so the tooltip would stay up forever. Hide it shortly after the finger lifts.
@@ -213,6 +225,15 @@ $('sensSeg').innerHTML=Object.entries(SENS).map(([k,v])=>'<button type="button" 
 $('hlSeg').innerHTML=Object.entries(HL).map(([k,v])=>'<button type="button" data-hl="'+v.hl+'">'+v.label+' · '+v.hl+'h</button>').join('');
 $('sensSeg').addEventListener('click',ev=>{const b=ev.target.closest('[data-thr]');if(b){S.thr=+b.dataset.thr;syncSettings();update()}});
 $('hlSeg').addEventListener('click',ev=>{const b=ev.target.closest('[data-hl]');if(b){S.hl=+b.dataset.hl;syncSettings();update()}});
+
+// ‹ › buttons nudge the neighbouring time slider by 15 minutes and fire its normal input handler.
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('.step');if(!b)return;
+  const r=b.closest('.ln').querySelector('input[type=range]');
+  const v=Math.min(+r.max,Math.max(+r.min,+r.value+ +b.dataset.d));
+  if(v===+r.value)return;
+  r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));
+});
 
 // ---------- example vs. mine ----------
 const toHours=v=>{const [H,M]=String(v).split(':').map(Number);return Number.isFinite(H)?H+(M||0)/60:null};
@@ -240,7 +261,7 @@ function update(){
   S.entries.forEach(e=>{
     const r=document.querySelector('.row[data-id="'+e.id+'"]');if(!r)return;
     r.querySelector('.dose+.v').textContent=e.perOz?e.oz+' oz · '+mgOf(e)+' mg':e.mg+' mg';
-    r.querySelector('.time+.v').textContent=fmt(e.t);
+    r.querySelector('.tv').textContent=fmt(e.t);
     const c=cutoff(e,ke),cut=r.querySelector('.cut');let txt='',warn=false;
     if(c.state==='ok'){
       txt=c.t>=Math.min(23.5,S.bed-1.5)?'Fine at any time up to '+fmt(c.t)+' for your bedtime level.':'Latest time for a clear bedtime: '+fmt(c.t)+'.';
@@ -257,6 +278,9 @@ function update(){
     {label:'Total',data:xs.map(t=>({x:t,y:Math.round(total(t,ke)*10)/10})),borderColor:line,borderWidth:2.5,pointRadius:0,tension:.25},
     {label:'OK at bed',data:[{x:X0,y:S.thr},{x:X1,y:S.thr}],borderColor:'#898781',borderWidth:1,borderDash:[2,4],pointRadius:0}
   ];
+  // Fixed y-axis so the chart doesn't jump while you drag; it only grows (in 100 mg steps) if the total would clip.
+  const peak=Math.max(...chart.data.datasets[chart.data.datasets.length-2].data.map(p=>p.y));
+  chart.options.scales.y.max=peak<=Y_MIN_MAX?Y_MIN_MAX:Math.ceil(peak/100)*100;
   chart.options.scales.y.grid.color=css('--grid');
   chart.update('none');
   $('legend').innerHTML=S.entries.filter(e=>e.on).map(e=>'<span><i class="sw" style="background:'+colorOf(e)+'"></i>'+esc(e.name)+'</span>').join('')+
