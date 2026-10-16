@@ -34,8 +34,11 @@ See the README. Key points:
 1. ~~Ship v1 and enable GitHub Pages.~~ Done.
 2. ~~Custom drinks plus a preset library, with rename, duplicate, and delete.~~ Done, including a pour-size slider for Celsius and per-drink cutoff times.
 3. "Right now" marker: done. Still to do: a multi-day view where you plan tomorrow separately from today.
-4. Sleep log: bedtime, wake time, quality 1–5, and a note. Stored in `localStorage`, with export and import.
-5. Correlation view: sleep quality vs. caffeine at bedtime and vs. workout timing. Show the sample size, say plainly that early data is mostly noise, and never imply causation.
-6. Exercise log (lifting, cardio, cold plunge) with educational cards.
-7. Optional: a light "character sheet" layer (streaks, stats), only once the tool is genuinely useful day to day.
-8. Optional: sharing through URL parameters. No accounts.
+3b. ~~Stage 1: mobile tooltip fix, sensitivity and half-life pickers, "Adam's day" example with a Make it mine flow.~~ Done.
+4. Stage 2: daily history (each day saved by date, and tomorrow starts from your usual template). Optional reflections: morning (sleep 1–5, hours or Watch score, note) and evening (energy and mood 1–5, note).
+5. Stage 3: factor log with tap, time and amount. Alcohol gets a drinks-in-system curve with a food setting (empty, snack, meal, big rich meal), plus optional weight and sex stored locally, clearly labeled as an approximation and never shown as fit to drive. Sleep aids come from a list of common ones (melatonin, trazodone, diphenhydramine, doxylamine, magnesium, THC, CBD…). The user picks their own and only the picks are saved locally. The public example never shows them.
+6. Sleep log: bedtime, wake time, quality 1–5, and a note. Stored in `localStorage`, with export and import.
+7. Correlation view: sleep quality vs. caffeine at bedtime and vs. workout timing. Show the sample size, say plainly that early data is mostly noise, and never imply causation.
+8. Exercise log (lifting, cardio, cold plunge) with educational cards.
+9. Optional: a light "character sheet" layer (streaks, stats), only once the tool is genuinely useful day to day.
+10. Optional: sharing through URL parameters. No accounts.

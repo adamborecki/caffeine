@@ -11,6 +11,8 @@ A small, private web app that shows how caffeine from each drink decays through 
 - Plots each drink's caffeine curve plus the total, with your sleep window shaded and a "now" marker.
 - Shows caffeine **right now**, **at bedtime**, **when you drop under your comfort level**, and **left at wake-up**.
 - For every drink, gives the **latest time you could have it** and still be under your level at bedtime.
+- Opens on an example routine (Adam's typical day). **Make it mine** asks how hard caffeine hits you and how long it lasts, then starts you fresh.
+- Keeps **sensitivity** (your "OK at bed" level) separate from **how long caffeine lasts** (half-life). They're different things.
 - Has a preset library (tea, coffee, energy drinks, preworkout, and more). Every drink can be renamed, duplicated, or removed, and you can save your own custom drinks.
 - Includes a "same routine every day" option that counts yesterday's leftovers.
 - Lets you export and import your setup as JSON.
@@ -44,7 +46,7 @@ There are no accounts, no server, and no analytics. Data stays in your browser's
 
 ## Run it
 
-Open `index.html` in a browser. There's no build step. Chart.js loads from a CDN. Pushing to `main` deploys to GitHub Pages through `.github/workflows/static.yml`.
+Open `index.html` in a browser (`app.js` and `style.css` sit next to it). There's no build step. Chart.js loads from a CDN. Pushing to `main` deploys to GitHub Pages through `.github/workflows/static.yml`.
 
 Project notes and the roadmap are in [`docs/NOTES.md`](docs/NOTES.md).
 
